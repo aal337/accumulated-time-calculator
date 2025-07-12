@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Accumulated Time Calculator</title>
+        <link rel="stylesheet" href="style.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.jsdelivr.net/pyodide/v0.28.0/full/pyodide.js"></script>
+        <script>
+            async function main() {
+                let pyodide = await loadPyodide();
+                pyodide.runPython(await (await fetch("app.py")).text());
+            };
+            main();
+        </script>
+    </head>
+    <body>
+        <div class="main flexbox">
+            <span>test</span>
+        </div>
+        <div class="main">
+            test
+        </div>
+    </body>
+</html>
