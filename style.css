@@ -14,8 +14,8 @@ html, body {
     padding: 0;
 }
 
-
 .input {
+  font-size: 28px;
   font-family: "Roboto", sans-serif;
   font-optical-sizing: auto;
   font-weight: 200;
@@ -24,12 +24,14 @@ html, body {
     "wdth" 100;
 }
 
-
 .result {
+  font-size: 56px;
   font-family: "Roboto", sans-serif;
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
   font-variation-settings:
     "wdth" 100;
+  width: 50%;
+  margin: auto;
 }
