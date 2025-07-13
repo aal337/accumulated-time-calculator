@@ -18,13 +18,40 @@
     </head>
     <body>
         <div class="main flexbox input">
-            <div class="flex-item">Duration of </div>
-            <div class="flex-item">todo: input field and unit selector</div>
-            <div class="flex-item"> per </div>
-            <div class="flex-item">todo: input</div>
-            <div class="flex-item"> across a time span of</div>
-            <div class="flex-item">todo: input</div>
-            <div class="flex-item">todo: button calculate</div>
+            <div class="flex-item">
+                <span class="label">Duration of </span>
+                <input id="duration"/>
+                <select id="duration-unit">
+                    <option value="seconds">seconds</option>
+                    <option value="minutes">minutes</option>
+                    <option value="hours">hours</option>
+                    <option value="days">days (are you crazy)</option>
+                </select>
+            </div>
+            <div class="flex-item">
+                <span class="label"> per </span>
+                <input id="frequency"/>
+                <select id="frequency-unit">
+                    <option value="hours">hours</option>
+                    <option value="days">days</option>
+                    <option value="weeks">weeks</option>
+                    <option value="months">months</option>
+                    <option value="years">years</option>
+                </select>
+            </div>
+            <div class="flex-item">
+                <span> across a time span of </span>
+                <input id="time-span"/>
+                <select id="time-span-unit">
+                    <option value="days">days</option>
+                    <option value="weeks">weeks</option>
+                    <option value="months">months</option>
+                    <option value="years">years</option>
+                    <option value="decades">decades</option>
+                </select>
+            </div>
+            <button class="flex-item" type="button">Calculate</button>
+        </div>
         <div class="main result">
             <span id="eq-sign">= </span>
             <span id="res-num"></span>
