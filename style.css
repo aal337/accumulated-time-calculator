@@ -5,6 +5,7 @@
 
 .flexbox {
     display: flex;
+    min-height: 50vh;
 }
 
 html, body {
