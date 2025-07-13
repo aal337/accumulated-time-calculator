@@ -6,6 +6,7 @@
 .flexbox {
     display: flex;
     min-height: 50vh;
+    flex-flow: row wrap;
 }
 
 html, body {
@@ -34,5 +35,9 @@ html, body {
   font-variation-settings:
     "wdth" 100;
   width: 50%;
-  margin: auto;
+  margin-left: 25%;
+}
+
+.flex-item {
+  white-space: nowrap;
 }
