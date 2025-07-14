@@ -9,11 +9,70 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://cdn.jsdelivr.net/pyodide/v0.28.0/full/pyodide.js"></script>
         <script>
+            // Global variables
+            let pyodide = null;
+            
+            // JavaScript function that calls Python
+            function calculateFromJS() {
+                try {
+                    if (!pyodide) {
+                        document.getElementById("res-num").textContent = "System not ready, please wait...";
+                        return;
+                    }
+                    
+                    // Get input values directly in JavaScript
+                    const duration_value = document.getElementById("duration").value;
+                    const duration_unit = document.getElementById("duration-unit").value;
+                    const frequency_value = document.getElementById("frequency").value;
+                    const frequency_unit = document.getElementById("frequency-unit").value;
+                    const timespan_value = document.getElementById("timespan").value;
+                    const timespan_unit = document.getElementById("timespan-unit").value;
+                    
+                    // Check for empty values
+                    if (!duration_value || !frequency_value || !timespan_value) {
+                        document.getElementById("res-num").textContent = "Please fill in all fields";
+                        return;
+                    }
+                    
+                    // Call Python function
+                    const pythonCode = `
+result = calculate("${duration_value}", "${duration_unit}", "${frequency_value}", "${frequency_unit}", "${timespan_value}", "${timespan_unit}")
+format_result(result)
+                    `;
+                    
+                    const result = pyodide.runPython(pythonCode);
+                    document.getElementById("res-num").textContent = result;
+                    
+                } catch (error) {
+                    document.getElementById("res-num").textContent = `Error: ${error.message}`;
+                }
+            }
+            
             async function main() {
-                let pyodide = await loadPyodide();
-                pyodide.runPython(await (await fetch("app.py")).text());
+                console.log("Loading Pyodide...");
+                pyodide = await loadPyodide();
+                console.log("Pyodide loaded, fetching Python script...");
+                
+                const pythonCode = await (await fetch("app.py")).text();
+                console.log("Python script fetched, running...");
+                
+                pyodide.runPython(pythonCode);
+                console.log("Python script executed");
+                
+                // Set up button handler in JavaScript
+                const button = document.getElementById("thebutton");
+                if (button) {
+                    console.log("Setting up JavaScript button handler");
+                    button.addEventListener("click", calculateFromJS);
+                    // Removed duplicate onclick handler
+                }
             };
-            main();
+            
+            // Wait for DOM to be ready before starting
+            document.addEventListener('DOMContentLoaded', function() {
+                console.log("DOM ready, starting main()");
+                main();
+            });
         </script>
     </head>
     <body>
@@ -45,7 +104,7 @@
                     <option value="weeks">weeks</option>
                 </select>
             </div>
-            <button class="flex-item" id ="thebutton" type="button">Calculate</button>
+            <button class="flex-item" id="thebutton" type="button">Calculate</button>
         </div>
         <div class="main result">
             <span id="eq-sign">= </span>
