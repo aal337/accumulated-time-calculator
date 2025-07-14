@@ -12,8 +12,8 @@ def calculate(duration: tuple[int, str],
 
 
 def collect_input():
-    return [(js.document.getElementById(name).value,
-             js.document.getElementById(name + "-unit"))
+    return [(int(js.document.getElementById(name).value),
+             js.document.getElementById(name + "-unit").value)
              for name in ["duration", "frequency", "timespan"]]
 
 
