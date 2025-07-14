@@ -74,3 +74,4 @@ def format_result(seconds):
 
 
 # Simplified initialization - no event handlers needed
+js.document.getElementById("res-num").textContent = "(Please enter values and click Calculate)"
