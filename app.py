@@ -29,4 +29,4 @@ def handler():
     output(calculate(*collect_input()))
 
 
-js.document.getElementByTagName("button").item(0).addEventListener("click", handler)
+js.document.getElementsByTagName("button").item(0).addEventListener("click", handler)
