@@ -18,8 +18,8 @@ def collect_input():
 
 
 def output(result):
-    value = (str(result.days) + " days") if result.days else ""
-    value += (str(result.seconds) + " seconds") if result.seconds else ""
+    value = (str(result.days) + " days") if result.days > 0 else ""
+    value += (str(result.seconds) + " seconds") if result.seconds > 0 else ""
     js.document.getElementById("res-num").textContent = value
 
 
@@ -27,4 +27,5 @@ def handler():
     output(calculate(*collect_input()))
 
 
-js.document.getElementsByTagName("button").item(0).addEventListener("click", handler)
+js.document.getElementById("thebutton").addEventListener("click", handler)
+js.document.getElementById("thebutton").textContent = "(please input sth)"
