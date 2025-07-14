@@ -19,10 +19,8 @@ def collect_input():
 
 def output(result):
     value = (str(result.days) + " days") if result.days else ""
-    value += (str(result.hours) + " hours") if result.hours else ""
-    value += (str(result.minutes) + " minutes") if result.minutes else ""
     value += (str(result.seconds) + " seconds") if result.seconds else ""
-    js.document.getElementById("res-num").value = value
+    js.document.getElementById("res-num").textContent = value
 
 
 def handler():
