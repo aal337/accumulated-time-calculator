@@ -6,7 +6,7 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <script src="https://cdn.jsdelivr.net/pyodide/v0.28.0/full/pyodide.js"></script>
         <script>
             // Global variables
@@ -20,6 +20,9 @@
                         return;
                     }
                     
+                    // Clear previous errors
+                    clearErrors();
+                    
                     // Get input values directly in JavaScript
                     const duration_value = document.getElementById("duration").value;
                     const duration_unit = document.getElementById("duration-unit").value;
@@ -28,9 +31,8 @@
                     const timespan_value = document.getElementById("timespan").value;
                     const timespan_unit = document.getElementById("timespan-unit").value;
                     
-                    // Check for empty values
-                    if (!duration_value || !frequency_value || !timespan_value) {
-                        document.getElementById("res-num").textContent = "Please fill in all fields";
+                    // Validate inputs
+                    if (!validateInputs(duration_value, frequency_value, timespan_value)) {
                         return;
                     }
                     
@@ -46,6 +48,115 @@ format_result(result)
                 } catch (error) {
                     document.getElementById("res-num").textContent = `Error: ${error.message}`;
                 }
+            }
+            
+            // Validation function
+            function validateInputs(duration, frequency, timespan) {
+                let isValid = true;
+                
+                // Check for empty values
+                if (!duration || !frequency || !timespan) {
+                    document.getElementById("res-num").textContent = "Please fill in all fields";
+                    
+                    if (!duration) {
+                        showError("duration", "Duration is required");
+                        isValid = false;
+                    }
+                    if (!frequency) {
+                        showError("frequency", "Frequency is required");
+                        isValid = false;
+                    }
+                    if (!timespan) {
+                        showError("timespan", "Time span is required");
+                        isValid = false;
+                    }
+                    return false;
+                }
+                
+                // Check if values can be converted to numbers
+                const durationNum = parseFloat(duration);
+                const frequencyNum = parseFloat(frequency);
+                const timespanNum = parseFloat(timespan);
+                
+                if (isNaN(durationNum) || durationNum <= 0) {
+                    showError("duration", "Duration must be a positive number");
+                    isValid = false;
+                }
+                
+                if (isNaN(frequencyNum) || frequencyNum <= 0) {
+                    showError("frequency", "Frequency must be a positive number");
+                    isValid = false;
+                }
+                
+                if (isNaN(timespanNum) || timespanNum <= 0) {
+                    showError("timespan", "Time span must be a positive number");
+                    isValid = false;
+                }
+                
+                // Logical validation: duration should be less than frequency
+                if (isValid) {
+                    const duration_unit = document.getElementById("duration-unit").value;
+                    const frequency_unit = document.getElementById("frequency-unit").value;
+                    
+                    // Convert to seconds for comparison
+                    const durationSeconds = convertToSeconds(durationNum, duration_unit);
+                    const frequencySeconds = convertToSeconds(frequencyNum, frequency_unit);
+                    
+                    if (durationSeconds > frequencySeconds) {
+                        showError("duration", "Duration cannot be longer than frequency period");
+                        showError("frequency", "Frequency period cannot be shorter than duration");
+                        isValid = false;
+                    }
+                }
+                
+                if (!isValid) {
+                    document.getElementById("res-num").textContent = "Please correct the errors above";
+                }
+                
+                return isValid;
+            }
+            
+            // Helper function to convert values to seconds
+            function convertToSeconds(value, unit) {
+                const conversions = {
+                    'seconds': 1,
+                    'minutes': 60,
+                    'hours': 3600,
+                    'days': 86400,
+                    'weeks': 604800,
+                    'months': 2629746,
+                    'years': 31556952,
+                    'decades': 315569520
+                };
+                return value * (conversions[unit] || 1);
+            }
+            
+            // Show error function
+            function showError(fieldId, message) {
+                const field = document.getElementById(fieldId);
+                field.classList.add('error');
+                
+                // Find the input-unit container (parent's parent of input)
+                const inputUnit = field.parentNode.parentNode;
+                
+                // Create or update error message
+                let errorDiv = inputUnit.querySelector('.error-message');
+                if (!errorDiv) {
+                    errorDiv = document.createElement('div');
+                    errorDiv.className = 'error-message';
+                    inputUnit.appendChild(errorDiv);
+                }
+                errorDiv.textContent = message;
+                errorDiv.classList.add('show');
+            }
+            
+            // Clear errors function
+            function clearErrors() {
+                const errorInputs = document.querySelectorAll('input.error');
+                errorInputs.forEach(input => input.classList.remove('error'));
+                
+                const errorMessages = document.querySelectorAll('.error-message.show');
+                errorMessages.forEach(msg => msg.classList.remove('show'));
             }
             
             async function main() {
@@ -66,8 +177,59 @@ format_result(result)
                     button.addEventListener("click", calculateFromJS);
                     // Removed duplicate onclick handler
                 }
+                
+                // Set up real-time validation
+                setupRealTimeValidation();
             };
             
+            // Real-time validation setup
+            function setupRealTimeValidation() {
+                const inputs = ['duration', 'frequency', 'timespan'];
+                
+                inputs.forEach(inputId => {
+                    const input = document.getElementById(inputId);
+                    if (input) {
+                        input.addEventListener('input', function() {
+                            // Clear error state when user starts typing
+                            this.classList.remove('error');
+                            const inputUnit = this.parentNode.parentNode;
+                            const errorMsg = inputUnit.querySelector('.error-message.show');
+                            if (errorMsg) {
+                                errorMsg.classList.remove('show');
+                            }
+                            
+                            // Validate if field has content
+                            if (this.value.trim()) {
+                                validateSingleField(inputId, this.value);
+                            }
+                        });
+                        
+                        input.addEventListener('blur', function() {
+                            // Validate individual field on blur
+                            if (this.value.trim()) {
+                                validateSingleField(inputId, this.value);
+                            }
+                        });
+                    }
+                });
+            }
+            
+            // Validate single field
+            function validateSingleField(fieldId, value) {
+                if (!value) {
+                    showError(fieldId, `${fieldId.charAt(0).toUpperCase() + fieldId.slice(1)} is required`);
+                    return false;
+                }
+                
+                const num = parseFloat(value);
+                if (isNaN(num) || num <= 0) {
+                    showError(fieldId, `${fieldId.charAt(0).toUpperCase() + fieldId.slice(1)} must be a positive number`);
+                    return false;
+                }
+                
+                return true;
+            }
+
             // Wait for DOM to be ready before starting
             document.addEventListener('DOMContentLoaded', function() {
                 console.log("DOM ready, starting main()");
@@ -76,35 +238,55 @@ format_result(result)
         </script>
     </head>
     <body>
+        <header class="app-header">
+            <h1>Accumulated Time Calculator</h1>
+            <p>Calculate how much time you spend on recurring activities</p>
+        </header>
         <div class="main flexbox input">
-            <div class="flex-item">
-                <span class="label">Duration of </span>
-                <input id="duration"/>
-                <select id="duration-unit">
-                    <option value="seconds">seconds</option>
-                    <option value="minutes">minutes</option>
-                    <option value="hours">hours</option>
-                    <option value="days">days (are you crazy)</option>
-                </select>
+            <span class="label">Duration of </span>
+            <div class="input-unit">
+                <div class="input-group">
+                    <input id="duration" type="number" min="0" step="0.01" placeholder="e.g., 30"/>
+                    <select id="duration-unit">
+                        <option value="seconds">seconds</option>
+                        <option value="minutes">minutes</option>
+                        <option value="hours">hours</option>
+                        <option value="days">days</option>
+                        <option value="weeks">weeks</option>
+                        <option value="months">months</option>
+                        <option value="years">years</option>
+                    </select>
+                </div>
             </div>
-            <div class="flex-item">
-                <span class="label"> per </span>
-                <input id="frequency"/>
-                <select id="frequency-unit">
-                    <option value="hours">hours</option>
-                    <option value="days">days</option>
-                    <option value="weeks">weeks</option>
-                </select>
+            <span class="label"> per </span>
+            <div class="input-unit">
+                <div class="input-group">
+                    <input id="frequency" type="number" min="0" step="0.01" placeholder="e.g., 1"/>
+                    <select id="frequency-unit">
+                        <option value="minutes">minutes</option>
+                        <option value="hours">hours</option>
+                        <option value="days">days</option>
+                        <option value="weeks">weeks</option>
+                        <option value="months">months</option>
+                        <option value="years">years</option>
+                    </select>
+                </div>
             </div>
-            <div class="flex-item">
-                <span> across a time span of </span>
-                <input id="timespan"/>
-                <select id="timespan-unit">
-                    <option value="days">days</option>
-                    <option value="weeks">weeks</option>
-                </select>
+            <span class="label"> across a time span of </span>
+            <div class="input-unit">
+                <div class="input-group">
+                    <input id="timespan" type="number" min="0" step="0.01" placeholder="e.g., 365"/>
+                    <select id="timespan-unit">
+                        <option value="hours">hours</option>
+                        <option value="days">days</option>
+                        <option value="weeks">weeks</option>
+                        <option value="months">months</option>
+                        <option value="years">years</option>
+                        <option value="decades">decades</option>
+                    </select>
+                </div>
             </div>
-            <button class="flex-item" id="thebutton" type="button">Calculate</button>
+            <button id="thebutton" type="button">Calculate</button>
         </div>
         <div class="main result">
             <span id="eq-sign">= </span>

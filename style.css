@@ -1,81 +1,332 @@
-.main {
-  height: 50%;
-  width: 100%;
+/* CSS Custom Properties for modern color scheme */
+:root {
+    --primary-color: #2563eb;
+    --primary-hover: #1d4ed8;
+    --success-color: #059669;
+    --success-hover: #047857;
+    --background-color: #f8fafc;
+    --card-background: #ffffff;
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
+    --border-color: #d1d5db;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --border-radius: 8px;
 }
 
-.flexbox {
-  display: flex;
-  min-height: 50vh;
-  flex-flow: row wrap;
-  padding: 2em;
-}
-
+/* Reset and base styles */
 html, body {
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  padding: 0;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    box-sizing: border-box;
 }
 
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* Header styling - 16% of height */
+.app-header {
+    height: 16vh;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem 1rem;
+    box-shadow: var(--shadow-md);
+    border-bottom: 3px solid var(--primary-hover);
+}
+
+.app-header h1 {
+    margin: 0 0 0.75rem 0;
+    font-size: 2rem;
+    font-weight: 600;
+    font-family: "Roboto", sans-serif;
+    letter-spacing: -0.025em;
+}
+
+.app-header p {
+    margin: 0;
+    font-size: 1.1rem;
+    opacity: 0.95;
+    font-family: "Roboto", sans-serif;
+    font-weight: 300;
+}
+
+/* Main container styling */
+.main {
+    width: 100%;
+}
+
+.main.input {
+    height: 42vh; /* Half of remaining 84% */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main.result {
+    height: 42vh; /* Half of remaining 84% */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--card-background);
+    margin: 1rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+}
+
+/* Card-based layout for input form */
+.flexbox {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 1rem;
+    background-color: var(--card-background);
+    margin: 0.5rem;
+    margin-bottom: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    gap: 0.25rem;
+    row-gap: 1rem;
+    max-width: calc(100vw - 1rem);
+    box-sizing: border-box;
+}
+
+/* Label styling */
+.label {
+    margin-right: 0.25rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    align-self: center;
+    font-size: 0.9rem;
+}
+
+/* Input-unit container */
+.input-unit {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* Input group within input-unit (input + select horizontally) */
+.input-group {
+    display: flex;
+    flex-direction: row;
+}
+
+/* Responsive grid layout */
+@media (max-width: 768px) {
+    .flexbox {
+        flex-direction: column;
+        gap: 0.75rem;
+        row-gap: 1rem;
+        margin: 0.25rem;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        align-items: center;
+        max-width: calc(100vw - 0.5rem);
+    }
+    
+    .input-unit {
+        width: 100%;
+        max-width: 280px;
+    }
+    
+    .input-group {
+        width: 100%;
+    }
+    
+    .label {
+        font-size: 0.85rem;
+        text-align: center;
+        margin-bottom: 0.25rem;
+    }
+    
+    input {
+        width: 80px;
+        font-size: 16px;
+        /* Prevent zoom on iOS */
+        -webkit-text-size-adjust: 100%;
+    }
+    
+    select {
+        font-size: 16px;
+        /* Prevent zoom on iOS */
+        -webkit-text-size-adjust: 100%;
+    }
+    
+    button {
+        font-size: 16px;
+        width: auto;
+        max-width: 200px;
+    }
+    
+    .app-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .app-header p {
+        font-size: 1rem;
+    }
+    
+    .input {
+        font-size: 18px !important;
+    }
+    
+    .result {
+        font-size: 28px !important;
+        margin: 0.25rem !important;
+    }
+}
+
+/* Typography and spacing improvements */
 .input {
-  font-size: 28px;
-  font-family: "Roboto", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 200;
-  font-style: normal;
-  font-variation-settings:
-    "wdth" 100;
+    font-size: 18px;
+    font-family: "Roboto", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    line-height: 1.5;
 }
 
 .result {
-  font-size: 56px;
-  font-family: "Roboto", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
-  font-variation-settings:
-    "wdth" 100;
-  width: 50%;
-  margin-left: 25%;
-  margin-bottom: 0;
-  height: 50vh;
+    font-size: 32px;
+    font-family: "Roboto", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+    color: var(--success-color);
+    text-align: center;
 }
 
-.flex-item {
-  white-space: nowrap;
-  margin-right: 1em;
-}
-
+/* Modern button styling with hover effects */
 button {
-  font-size: 25px;
-  background-color: green;
-  color: white;
-  border-radius: 16px;
-  border-style: solid;
-  border-color: darkgreen
+    font-size: 16px;
+    background-color: var(--success-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 0.4rem 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+    box-shadow: var(--shadow-sm);
+    height: 36px;
+    align-self: center;
+    white-space: nowrap;
 }
 
+button:hover {
+    background-color: var(--success-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* Styled input fields - make them bigger and stick to selects */
 input {
-  border-top-left-radius: 16px;
-  border-bottom-left-radius: 16px;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-  margin-right: 0;
+    border: 2px solid var(--border-color);
+    border-top-left-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: none;
+    padding: 0.4rem 0.6rem;
+    font-size: 16px;
+    font-family: inherit;
+    transition: border-color 0.2s ease-in-out;
+    background-color: var(--card-background);
+    width: 85px;
+    height: 36px;
+    line-height: 1.2;
+    box-sizing: border-box;
+    vertical-align: middle;
 }
 
+input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgb(37 99 235 / 0.1);
+}
+
+input.error {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px rgb(220 38 38 / 0.1);
+}
+
+/* Styled select fields - stick to inputs and improve design */
 select {
-  border-top-right-radius: 16px;
-  border-bottom-right-radius: 16px;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  margin-left: 0
+    border: 2px solid var(--border-color);
+    border-top-right-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-left: none;
+    padding: 0.4rem 0.6rem;
+    font-size: 16px;
+    font-family: inherit;
+    background-color: var(--card-background);
+    cursor: pointer;
+    transition: border-color 0.2s ease-in-out;
+    height: 36px;
+    line-height: 1.2;
+    box-sizing: border-box;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.4rem center;
+    background-repeat: no-repeat;
+    background-size: 1rem 1rem;
+    padding-right: 2rem;
+    vertical-align: middle;
+    min-width: 0;
 }
 
-.flex-item > span {
-  margin-right: 0.5em;
-  margin-left: 0.8em;
+select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgb(37 99 235 / 0.1);
 }
 
+/* Error display styling */
+.error-message {
+    color: #dc2626;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    display: none;
+    font-weight: 500;
+    text-align: left;
+    width: 100%;
+}
+
+.error-message.show {
+    display: block;
+}
+
+/* Result display improvements */
 .result > span {
-  margin: 16px;
+    margin: 0.5rem;
+}
+
+#eq-sign {
+    color: var(--text-secondary);
+    font-weight: 300;
+}
+
+#res-num {
+    color: var(--success-color);
+    font-weight: 600;
 }
